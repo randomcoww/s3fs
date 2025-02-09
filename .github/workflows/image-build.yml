@@ -5,9 +5,11 @@
 name: Image Build
 on:
   workflow_dispatch:
+  schedule:
+  - cron: "0 3 * * 0"
   push:
-    tags:
-      - v*
+    branches:
+    - master
 
 jobs:
   build:
