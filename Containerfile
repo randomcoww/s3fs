@@ -14,7 +14,7 @@ RUN set -x \
   && terraform apply -auto-approve \
   && cat outputs/* > ca-cert.pem
 
-FROM alpine:edge
+FROM alpine:latest
 COPY --from=CA ca-cert.pem /usr/local/share/ca-certificates/
 
 RUN set -x \
