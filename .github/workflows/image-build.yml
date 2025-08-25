@@ -44,7 +44,7 @@ jobs:
           --dockerfile="./Containerfile" \
           --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
           --destination="ghcr.io/${{ github.repository }}:v$TAG" \
-          --build-arg TRUSTED_CA="$TRUSTED_CA" \
+          --build-arg INTERNAL_CA_CERT="$INTERNAL_CA_CERT" \
           --push-retry 3
   cleanup:
     needs:
