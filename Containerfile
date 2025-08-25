@@ -1,21 +1,6 @@
-FROM hashicorp/terraform:latest as certs
-COPY trusted_ca.tf .
-
-ARG AWS_ENDPOINT_URL_S3
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
-ENV AWS_ENDPOINT_URL_S3=$AWS_ENDPOINT_URL_S3
-ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-
-RUN set -x \
-  \
-  && terraform init \
-  && terraform apply -auto-approve \
-  && cat outputs/* > ca-cert.pem
-
 FROM alpine:latest
-COPY --from=certs ca-cert.pem /usr/local/share/ca-certificates/
+
+ARG TRUSTED_CA
 
 RUN set -x \
   \
@@ -23,6 +8,8 @@ RUN set -x \
     ca-certificates \
     s3fs-fuse \
   \
+  && mkdir -p /usr/local/share/ca-certificates \
+  && echo -e "$TRUSTED_CA" > /usr/local/share/ca-certificates/ca-cert.pem \
   && update-ca-certificates
 
 ENTRYPOINT ["s3fs", "-f"]
